@@ -34,6 +34,7 @@ module.exports = {
       filename: 'remoteEntry.js',
       exposes: {
         './Checkout': './src/Checkout',
+        './Confirmation': './src/Confirmation',
       },
       shared: {
         react: { singleton: true, requiredVersion: '^18.2.0' },

@@ -5,9 +5,10 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 // Lazy load micro-frontends
 const Products = React.lazy(() => import('products/Products'));
-const ProductDetails = React.lazy(() => import('./productDetails/ProductDetails'));
-const Cart = React.lazy(() => import('./cart/Cart'));
-const Checkout = React.lazy(() => import('./checkout/Checkout'));
+const ProductDetails = React.lazy(() => import('productDetails/ProductDetails'));
+const Cart = React.lazy(() => import('cart/Cart'));
+const Checkout = React.lazy(() => import('checkout/Checkout'));
+const Confirmation = React.lazy(() => import('checkout/Confirmation'));
 
 const App: React.FC = () => {
   return (
@@ -32,6 +33,7 @@ const App: React.FC = () => {
             <Route path="/product/:id" element={<ProductDetails />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />
+            <Route path="/confirmation" element={<Confirmation />} />
           </Routes>
         </Suspense>
       </Container>
