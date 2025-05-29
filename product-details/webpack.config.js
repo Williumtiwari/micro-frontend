@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
+const webpack = require('webpack');
 const path = require('path');
 
 module.exports = {
@@ -11,6 +12,9 @@ module.exports = {
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
+    fallback: {
+      "process": require.resolve("process/browser")
+    }
   },
   module: {
     rules: [
@@ -29,14 +33,21 @@ module.exports = {
     ],
   },
   plugins: [
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+    }),
+    new webpack.DefinePlugin({
+      'process.env': JSON.stringify(process.env)
+    }),
     new ModuleFederationPlugin({
       name: 'productDetails',
       filename: 'remoteEntry.js',
       exposes: {
-        './ProductDetails': './src/ProductDetails',
+        './ProductDetails': './src/bootstrap',
       },
       remotes: {
         container: 'container@http://localhost:3000/remoteEntry.js',
+        products: 'products@http://localhost:3001/remoteEntry.js',
       },
       shared: {
         react: { singleton: true, requiredVersion: '^18.2.0' },

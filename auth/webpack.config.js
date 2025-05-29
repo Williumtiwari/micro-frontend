@@ -1,14 +1,12 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
-const webpack = require('webpack');
 const path = require('path');
-require('dotenv').config();
 
 module.exports = {
-  entry: './src/index.ts',
+  entry: './src/index.tsx',
   mode: 'development',
   devServer: {
-    port: 3000,
+    port: 3005,
     historyApiFallback: true,
   },
   resolve: {
@@ -31,23 +29,13 @@ module.exports = {
     ],
   },
   plugins: [
-    new webpack.DefinePlugin({
-      'process.env': JSON.stringify(process.env)
-    }),
     new ModuleFederationPlugin({
-      name: 'container',
+      name: 'auth',
       filename: 'remoteEntry.js',
       exposes: {
-        './CartContext': './src/CartContext',
-        './CartProvider': './src/CartContext',
-        './SharedCartProvider': './src/SharedCartProvider',
-      },
-      remotes: {
-        products: 'products@http://localhost:3001/remoteEntry.js',
-        productDetails: 'productDetails@http://localhost:3002/remoteEntry.js',
-        cart: 'cart@http://localhost:3003/remoteEntry.js',
-        checkout: 'checkout@http://localhost:3004/remoteEntry.js',
-        auth: 'auth@http://localhost:3005/remoteEntry.js',
+        './AuthContext': './src/contexts/AuthContext.tsx',
+        './ProtectedRoute': './src/components/ProtectedRoute.tsx',
+        './SignIn': './src/pages/SignIn.tsx',
       },
       shared: {
         react: { singleton: true, requiredVersion: '^18.2.0' },

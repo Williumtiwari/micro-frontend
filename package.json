@@ -7,23 +7,27 @@
     "products",
     "product-details",
     "cart",
-    "checkout"
+    "checkout",
+    "auth"
   ],
   "scripts": {
-    "start": "concurrently \"npm run start:container\" \"npm run start:products\" \"npm run start:product-details\" \"npm run start:cart\" \"npm run start:checkout\"",
+    "start": "concurrently \"npm run start:container\" \"npm run start:products\" \"npm run start:product-details\" \"npm run start:cart\" \"npm run start:checkout\" \"npm run start:auth\"",
     "start:container": "cd container && npm start",
     "start:products": "cd products && npm start",
     "start:product-details": "cd product-details && npm start",
     "start:cart": "cd cart && npm start",
     "start:checkout": "cd checkout && npm start",
-    "build": "npm run build:container && npm run build:products && npm run build:product-details && npm run build:cart && npm run build:checkout",
+    "start:auth": "cd auth && npm start",
+    "build": "npm run build:container && npm run build:products && npm run build:product-details && npm run build:cart && npm run build:checkout && npm run build:auth",
     "build:container": "cd container && npm run build",
     "build:products": "cd products && npm run build",
     "build:product-details": "cd product-details && npm run build",
     "build:cart": "cd cart && npm run build",
-    "build:checkout": "cd checkout && npm run build"
+    "build:checkout": "cd checkout && npm run build",
+    "build:auth": "cd auth && npm run build"
   },
   "devDependencies": {
+    "@types/node": "^22.15.24",
     "concurrently": "^8.2.2"
   }
-} 
+}
