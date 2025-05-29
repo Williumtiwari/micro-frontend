@@ -8,6 +8,11 @@ module.exports = {
   devServer: {
     port: 3004,
     historyApiFallback: true,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+      'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization'
+    },
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
@@ -36,11 +41,15 @@ module.exports = {
         './Checkout': './src/Checkout',
         './Confirmation': './src/Confirmation',
       },
+      remotes: {
+        container: 'container@http://localhost:3000/remoteEntry.js',
+      },
       shared: {
-        react: { singleton: true, requiredVersion: '^18.2.0' },
-        'react-dom': { singleton: true, requiredVersion: '^18.2.0' },
+        react: { singleton: true, eager: true, requiredVersion: '^18.2.0' },
+        'react-dom': { singleton: true, eager: true, requiredVersion: '^18.2.0' },
         'react-router-dom': { singleton: true, requiredVersion: '^6.22.1' },
         '@mui/material': { singleton: true, requiredVersion: '^5.15.10' },
+        '@mui/icons-material': { singleton: true, requiredVersion: '^5.15.10' },
         '@emotion/react': { singleton: true, requiredVersion: '^11.11.3' },
         '@emotion/styled': { singleton: true, requiredVersion: '^11.11.0' },
       },

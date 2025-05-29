@@ -2,6 +2,7 @@ import React, { Suspense } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 import { AppBar, Toolbar, Typography, Container, CircularProgress, IconButton, Badge } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import { CartProvider, useCart } from './CartContext';
 
 // Lazy load micro-frontends
 const Products = React.lazy(() => import('products/Products'));
@@ -10,7 +11,10 @@ const Cart = React.lazy(() => import('cart/Cart'));
 const Checkout = React.lazy(() => import('checkout/Checkout'));
 const Confirmation = React.lazy(() => import('checkout/Confirmation'));
 
-const App: React.FC = () => {
+const AppContent: React.FC = () => {
+  const { cartItems } = useCart();
+  const itemCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+
   return (
     <div>
       <AppBar position="static">
@@ -19,7 +23,7 @@ const App: React.FC = () => {
             Fidget Spinner Shop
           </Typography>
           <IconButton color="inherit" component={Link} to="/cart">
-            <Badge badgeContent={0} color="error">
+            <Badge badgeContent={itemCount} color="error">
               <ShoppingCartIcon />
             </Badge>
           </IconButton>
@@ -38,6 +42,14 @@ const App: React.FC = () => {
         </Suspense>
       </Container>
     </div>
+  );
+};
+
+const App: React.FC = () => {
+  return (
+    <CartProvider>
+      <AppContent />
+    </CartProvider>
   );
 };
 

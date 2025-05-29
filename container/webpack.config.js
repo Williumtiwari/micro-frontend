@@ -31,6 +31,12 @@ module.exports = {
   plugins: [
     new ModuleFederationPlugin({
       name: 'container',
+      filename: 'remoteEntry.js',
+      exposes: {
+        './CartContext': './src/CartContext',
+        './CartProvider': './src/CartContext',
+        './SharedCartProvider': './src/SharedCartProvider',
+      },
       remotes: {
         products: 'products@http://localhost:3001/remoteEntry.js',
         productDetails: 'productDetails@http://localhost:3002/remoteEntry.js',

@@ -11,6 +11,8 @@ import {
   Snackbar,
   Alert,
 } from '@mui/material';
+import { useCart } from 'container/CartContext';
+import SharedCartProvider from 'container/SharedCartProvider';
 
 // Mock product data
 const mockProduct = {
@@ -28,11 +30,12 @@ const mockProduct = {
   image: 'https://picsum.photos/400/400?random=1',
 };
 
-const ProductDetails: React.FC = () => {
+const ProductDetailsContent: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
   const [showAlert, setShowAlert] = useState(false);
+  const { addToCart, cartItems } = useCart();
 
   const handleQuantityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(event.target.value);
@@ -42,7 +45,9 @@ const ProductDetails: React.FC = () => {
   };
 
   const handleAddToCart = () => {
-    // TODO: Implement cart functionality
+    console.log('Adding to cart:', mockProduct, 'quantity:', quantity);
+    addToCart(mockProduct, quantity);
+    console.log('Current cart items:', cartItems);
     setShowAlert(true);
   };
 
@@ -122,6 +127,14 @@ const ProductDetails: React.FC = () => {
         </Alert>
       </Snackbar>
     </Container>
+  );
+};
+
+const ProductDetails: React.FC = () => {
+  return (
+    <SharedCartProvider>
+      <ProductDetailsContent />
+    </SharedCartProvider>
   );
 };
 

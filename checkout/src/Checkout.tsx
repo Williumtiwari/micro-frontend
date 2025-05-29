@@ -14,11 +14,14 @@ import {
   Step,
   StepLabel,
 } from '@mui/material';
+import { useCart } from 'container/CartContext';
+import SharedCartProvider from 'container/SharedCartProvider';
 
 const steps = ['Shipping address', 'Payment details', 'Review order'];
 
-const Checkout: React.FC = () => {
+const CheckoutContent: React.FC = () => {
   const navigate = useNavigate();
+  const { cartItems, clearCart } = useCart();
   const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState({
     firstName: '',
@@ -44,7 +47,12 @@ const Checkout: React.FC = () => {
   };
 
   const handleNext = () => {
-    setActiveStep((prevStep) => prevStep + 1);
+    if (activeStep === steps.length - 1) {
+      clearCart();
+      navigate('/confirmation');
+    } else {
+      setActiveStep((prevStep) => prevStep + 1);
+    }
   };
 
   const handleBack = () => {
@@ -53,11 +61,10 @@ const Checkout: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement order submission
-    navigate('/confirmation');
+    handleNext();
   };
 
-  const renderStepContent = (step: number) => {
+  const getStepContent = (step: number) => {
     switch (step) {
       case 0:
         return (
@@ -211,17 +218,29 @@ const Checkout: React.FC = () => {
             <Typography variant="body1" paragraph>
               Payment details:
             </Typography>
-            <Typography variant="body2">
+            <Typography variant="body2" paragraph>
               Card holder: {formData.cardName}
               <br />
               Card number: **** **** **** {formData.cardNumber.slice(-4)}
               <br />
               Expiry date: {formData.expDate}
             </Typography>
+            <Typography variant="body1" paragraph>
+              Cart items:
+            </Typography>
+            {cartItems.map((item: { id: number; name: string; price: number; quantity: number }) => (
+              <Typography key={item.id} variant="body2" paragraph>
+                {item.name} x {item.quantity} - ${(item.price * item.quantity).toFixed(2)}
+              </Typography>
+            ))}
+            <Typography variant="h6" gutterBottom>
+              Total: ${cartItems.reduce((sum: number, item: { price: number; quantity: number }) => 
+                sum + item.price * item.quantity, 0).toFixed(2)}
+            </Typography>
           </Box>
         );
       default:
-        return null;
+        return 'Unknown step';
     }
   };
 
@@ -239,36 +258,33 @@ const Checkout: React.FC = () => {
           ))}
         </Stepper>
         <form onSubmit={handleSubmit}>
-          {renderStepContent(activeStep)}
+          {getStepContent(activeStep)}
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
             {activeStep !== 0 && (
               <Button onClick={handleBack} sx={{ mr: 1 }}>
                 Back
               </Button>
             )}
-            {activeStep === steps.length - 1 ? (
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                size="large"
-              >
-                Place Order
-              </Button>
-            ) : (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleNext}
-                size="large"
-              >
-                Next
-              </Button>
-            )}
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleNext}
+              disabled={!formData.firstName || !formData.lastName || !formData.address1 || !formData.city || !formData.state || !formData.zip || !formData.country}
+            >
+              {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
+            </Button>
           </Box>
         </form>
       </Paper>
     </Container>
+  );
+};
+
+const Checkout: React.FC = () => {
+  return (
+    <SharedCartProvider>
+      <CheckoutContent />
+    </SharedCartProvider>
   );
 };
 

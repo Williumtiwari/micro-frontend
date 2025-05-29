@@ -35,6 +35,9 @@ module.exports = {
       exposes: {
         './Cart': './src/Cart',
       },
+      remotes: {
+        container: 'container@http://localhost:3000/remoteEntry.js',
+      },
       shared: {
         react: { singleton: true, requiredVersion: '^18.2.0' },
         'react-dom': { singleton: true, requiredVersion: '^18.2.0' },

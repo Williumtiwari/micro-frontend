@@ -6,8 +6,8 @@ import {
   Paper,
   Button,
   Box,
-  CheckCircleOutline as CheckCircleOutlineIcon,
 } from '@mui/material';
+import { CheckCircleOutline as CheckCircleOutlineIcon } from '@mui/icons-material';
 
 const Confirmation: React.FC = () => {
   const navigate = useNavigate();

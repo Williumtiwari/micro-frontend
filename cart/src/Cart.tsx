@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Container,
@@ -12,50 +12,35 @@ import {
   Divider,
   Box,
   TextField,
+  Paper,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useCart } from 'container/CartContext';
+import SharedCartProvider from 'container/SharedCartProvider';
 
-// Mock cart data
-const mockCartItems = [
-  {
-    id: 1,
-    name: 'Premium Fidget Spinner',
-    price: 29.99,
-    quantity: 2,
-    image: 'https://picsum.photos/100/100?random=1',
-  },
-  {
-    id: 2,
-    name: 'Metal Fidget Spinner',
-    price: 19.99,
-    quantity: 1,
-    image: 'https://picsum.photos/100/100?random=2',
-  },
-];
-
-const Cart: React.FC = () => {
+const CartContent: React.FC = () => {
   const navigate = useNavigate();
-  const [cartItems, setCartItems] = useState(mockCartItems);
+  const { cartItems, updateQuantity, removeFromCart } = useCart();
 
-  const handleQuantityChange = (id: number, newQuantity: number) => {
-    if (newQuantity > 0) {
-      setCartItems(
-        cartItems.map((item) =>
-          item.id === id ? { ...item, quantity: newQuantity } : item
-        )
-      );
-    }
+  useEffect(() => {
+    console.log('Cart items updated:', cartItems);
+  }, [cartItems]);
+
+  const handleQuantityChange = (productId: number, newQuantity: number) => {
+    console.log('Updating quantity for product:', productId, 'to:', newQuantity);
+    updateQuantity(productId, newQuantity);
   };
 
-  const handleRemoveItem = (id: number) => {
-    setCartItems(cartItems.filter((item) => item.id !== id));
+  const handleRemoveItem = (productId: number) => {
+    console.log('Removing product:', productId);
+    removeFromCart(productId);
   };
 
   const calculateTotal = () => {
-    return cartItems.reduce(
-      (total, item) => total + item.price * item.quantity,
-      0
-    );
+    const total = cartItems.reduce((sum: number, item: { price: number; quantity: number }) => 
+      sum + item.price * item.quantity, 0);
+    console.log('Calculated total:', total);
+    return total;
   };
 
   return (
@@ -64,13 +49,13 @@ const Cart: React.FC = () => {
         Shopping Cart
       </Typography>
       {cartItems.length === 0 ? (
-        <Typography variant="h6" color="text.secondary" align="center">
-          Your cart is empty
-        </Typography>
+        <Paper sx={{ p: 3, textAlign: 'center' }}>
+          <Typography variant="h6">Your cart is empty</Typography>
+        </Paper>
       ) : (
         <>
           <List>
-            {cartItems.map((item) => (
+            {cartItems.map((item: { id: number; name: string; price: number; quantity: number; image: string }) => (
               <React.Fragment key={item.id}>
                 <ListItem>
                   <img
@@ -83,29 +68,34 @@ const Cart: React.FC = () => {
                     secondary={`$${item.price.toFixed(2)}`}
                   />
                   <ListItemSecondaryAction>
-                    <TextField
-                      type="number"
-                      value={item.quantity}
-                      onChange={(e) =>
-                        handleQuantityChange(item.id, parseInt(e.target.value))
-                      }
-                      inputProps={{ min: 1 }}
-                      sx={{ width: 60, mr: 2 }}
-                    />
-                    <IconButton
-                      edge="end"
-                      aria-label="delete"
-                      onClick={() => handleRemoveItem(item.id)}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                      <TextField
+                        type="number"
+                        value={item.quantity}
+                        onChange={(e) => {
+                          const newQuantity = parseInt(e.target.value);
+                          if (newQuantity > 0) {
+                            handleQuantityChange(item.id, newQuantity);
+                          }
+                        }}
+                        inputProps={{ min: 1 }}
+                        sx={{ width: '80px' }}
+                      />
+                      <IconButton
+                        edge="end"
+                        aria-label="delete"
+                        onClick={() => handleRemoveItem(item.id)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Box>
                   </ListItemSecondaryAction>
                 </ListItem>
                 <Divider />
               </React.Fragment>
             ))}
           </List>
-          <Box sx={{ mt: 4, textAlign: 'right' }}>
+          <Box sx={{ mt: 3, textAlign: 'right' }}>
             <Typography variant="h6" gutterBottom>
               Total: ${calculateTotal().toFixed(2)}
             </Typography>
@@ -121,6 +111,14 @@ const Cart: React.FC = () => {
         </>
       )}
     </Container>
+  );
+};
+
+const Cart: React.FC = () => {
+  return (
+    <SharedCartProvider>
+      <CartContent />
+    </SharedCartProvider>
   );
 };
 
