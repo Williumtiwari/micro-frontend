@@ -38,8 +38,8 @@ module.exports = {
       name: 'checkout',
       filename: 'remoteEntry.js',
       exposes: {
-        './Checkout': './src/Checkout',
-        './Confirmation': './src/Confirmation',
+        './Checkout': './src/Checkout.tsx',
+        './Confirmation': './src/Confirmation.tsx',
       },
       remotes: {
         container: 'container@http://localhost:3000/remoteEntry.js',

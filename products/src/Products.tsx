@@ -11,27 +11,19 @@ import {
   Pagination,
   Box,
 } from '@mui/material';
-
-// Mock data for products
-const mockProducts = Array.from({ length: 20 }, (_, i) => ({
-  id: i + 1,
-  name: `Fidget Spinner ${i + 1}`,
-  price: Math.floor(Math.random() * 50) + 10,
-  image: `https://picsum.photos/200/200?random=${i + 1}`,
-  description: 'High-quality fidget spinner for stress relief and entertainment.',
-}));
+import { products } from './data';
 
 const Products: React.FC = () => {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const productsPerPage = 8;
-  const totalPages = Math.ceil(mockProducts.length / productsPerPage);
+  const totalPages = Math.ceil(products.length / productsPerPage);
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
 
-  const displayedProducts = mockProducts.slice(
+  const displayedProducts = products.slice(
     (page - 1) * productsPerPage,
     page * productsPerPage
   );
@@ -48,7 +40,7 @@ const Products: React.FC = () => {
               <CardMedia
                 component="img"
                 height="200"
-                image={product.image}
+                image={product.imageUrl}
                 alt={product.name}
               />
               <CardContent>
@@ -59,7 +51,7 @@ const Products: React.FC = () => {
                   {product.description}
                 </Typography>
                 <Typography variant="h6" color="primary" sx={{ mt: 2 }}>
-                  ${product.price}
+                  ${product.price.toFixed(2)}
                 </Typography>
                 <Button
                   variant="contained"
