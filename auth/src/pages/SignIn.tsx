@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../contexts/AuthContext';
@@ -8,6 +8,7 @@ const SignIn: React.FC = () => {
   const location = useLocation();
   const { login } = useAuth();
   const from = location.state?.from?.pathname || '/';
+  const [error, setError] = useState<string>('');
 
   const handleGoogleSuccess = async (credentialResponse: any) => {
     try {
@@ -23,6 +24,10 @@ const SignIn: React.FC = () => {
     } catch (error) {
       console.error('Login failed:', error);
     }
+  };
+
+  const handleLoginFailure = () => {
+    setError('Login failed. Please try again.');
   };
 
   return (
@@ -44,9 +49,7 @@ const SignIn: React.FC = () => {
         <h1 style={{ marginBottom: '2rem' }}>Sign In</h1>
         <GoogleLogin
           onSuccess={handleGoogleSuccess}
-          onError={() => {
-            console.log('Login Failed');
-          }}
+          onError={handleLoginFailure}
         />
       </div>
     </div>

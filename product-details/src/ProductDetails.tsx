@@ -46,14 +46,12 @@ const ProductDetailsContent: React.FC = () => {
   };
 
   const handleAddToCart = () => {
-    console.log('Adding to cart:', product, 'quantity:', quantity);
     addToCart({
       id: parseInt(product.id),
       name: product.name,
       price: product.price,
       image: product.imageUrl
     }, quantity);
-    console.log('Current cart items:', cartItems);
     setShowAlert(true);
   };
 

@@ -15,7 +15,7 @@ const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
 // Lazy load micro-frontends
 const Products = React.lazy(() => import('products/Products'));
-const ProductDetails = React.lazy(() => import('productDetails/ProductDetails'));
+const ProductDetails = React.lazy(() => import('productDetails/ProductDetails').then(module => ({ default: module.default })));
 const Cart = React.lazy(() => import('cart/Cart'));
 const Checkout = React.lazy(() => import('checkout/Checkout'));
 const Confirmation = React.lazy(() => import('checkout/Confirmation'));

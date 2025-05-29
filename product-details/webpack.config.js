@@ -43,7 +43,7 @@ module.exports = {
       name: 'productDetails',
       filename: 'remoteEntry.js',
       exposes: {
-        './ProductDetails': './src/bootstrap',
+        './ProductDetails': './src/ProductDetails',
       },
       remotes: {
         container: 'container@http://localhost:3000/remoteEntry.js',

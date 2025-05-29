@@ -22,25 +22,17 @@ const CartContent: React.FC = () => {
   const navigate = useNavigate();
   const { cartItems, updateQuantity, removeFromCart } = useCart();
 
-  useEffect(() => {
-    console.log('Cart items updated:', cartItems);
-  }, [cartItems]);
-
   const handleQuantityChange = (productId: number, newQuantity: number) => {
-    console.log('Updating quantity for product:', productId, 'to:', newQuantity);
     updateQuantity(productId, newQuantity);
   };
 
   const handleRemoveItem = (productId: number) => {
-    console.log('Removing product:', productId);
     removeFromCart(productId);
   };
 
   const calculateTotal = () => {
-    const total = cartItems.reduce((sum: number, item: { price: number; quantity: number }) => 
+    return cartItems.reduce((sum: number, item: { price: number; quantity: number }) => 
       sum + item.price * item.quantity, 0);
-    console.log('Calculated total:', total);
-    return total;
   };
 
   return (
